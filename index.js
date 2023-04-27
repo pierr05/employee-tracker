@@ -21,31 +21,85 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the employee_db database.`)
   );
+  
+  let departments;
+  db.query('SELECT * FROM department', function(err, result) {
+    departments = result;
+    return departments;
+  });
 
-  // db.query('SELECT * FROM department', function(err, result) {
-  //   console.table(result)
-  // });
-  // query 2
-  db.query('SELECT * FROM role', function(err, result) {
-    console.table(result)
+  // // query 2
+  let roles; 
+  db.query('SELECT * FROM role_table', function(err, result) {
+    roles = result;
+    return roles;
+  }); 
+
+  // query 3
+  let employees; 
+  db.query('SELECT * FROM employee', function(err, result) {
+    employees = result;
+    return employees; 
   }); 
 
   // inquirer prompt question
-  // inquirer.prompt(
-  //   [
-  //     {
-  //       type: 'rawlist',
-  //       name: 'options',
-  //       message: "What would you like to do?",
-  //       choices: ["View All Employees", "Add Employee", "View All Roles", "Add Role", "View All Departments", "Add Department"]
-  //     }
-  //   ]
-  // );
+  inquirer.prompt(
+    [
+      {
+        type: 'rawlist',
+        name: 'options',
+        message: "What would you like to do?",
+        choices: ["View All Employees", "View All Departments", "View All Roles", "Add Employee", "Add Role", "Add Department"]
+      }
+    ])
+    .then((value)  => {
+      if (value.options === "View All Employees") {
+        console.table(employees)
+        inquirer.prompt([
+          {
+            type: 'rawlist',
+            name: 'options',
+            message: "What would you like to do?",
+            choices: ["View All Employees", "View All Departments", "View All Roles", "Add Employee", "Add Role", "Add Department"]
+          }
+        ])
+        .then((value) => {
+          if (value.options === "View All Departments") {
+            console.table(departments);
+            inquirer.prompt([
+              {
+                type: 'rawlist',
+                name: 'options',
+                message: "What would you like to do?",
+                choices: ["View All Employees", "View All Departments", "View All Roles", "Add Employee", "Add Role", "Add Department"]
+              }
+            ])
+            .then((value) => {
+              if (value.options === "View All Roles") {
+                console.table(roles);
+                inquirer.prompt([
+                  {
+                    type: 'rawlist',
+                    name: 'options',
+                    message: "What would you like to do?",
+                    choices: ["View All Employees", "View All Departments", "View All Roles", "Add Employee", "Add Role", "Add Department"]
+                  }
+                ])
+              }
+            })
+          }
+        })
+      }
+
+    }) 
+    .catch((err) => {
+      console.log(err)
+    }); 
 
   app.use((req, res) => {
     res.status(404).end();
   });
 
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+
   });
