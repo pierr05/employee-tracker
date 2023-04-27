@@ -12,6 +12,7 @@ CREATE TABLE role (
     id INT NOT NULL auto_increment PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(),
+    -- to hold reference to department role belongs to
     department_id INT FOREIGN KEY REFERENCES department (department_id)
 );
 
